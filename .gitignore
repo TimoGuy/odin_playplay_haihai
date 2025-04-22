@@ -1,0 +1,3 @@
+# Ignore changes in `bin/` folder.
+# (Keep the `.gitkeep` file in there tho)
+bin/
