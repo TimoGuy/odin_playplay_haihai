@@ -1,23 +1,23 @@
 package window
 
 import "core:fmt"
+import "core:math"
 import "vendor:glfw"
-import gl "vendor:OpenGL"
 
-s_window_handle : glfw.WindowHandle
+
+@(private) s_initialized := false
+@(private) s_window_handle : glfw.WindowHandle
 
 WIDTH  :: 800
 HEIGHT :: 450
 TITLE  :: "Trying out GLFW in Odin"
 
-GL_MAJOR_VERSION :: 4
-GL_MINOR_VERSION :: 6
 
+setup :: proc() {
+    fmt.println("Setup window.")
+    ensure(!s_initialized)
 
-setup :: proc()
-{
-    if !bool(glfw.Init())
-    {
+    if !bool(glfw.Init()) {
         fmt.eprintln("GLFW failed to init. Aborting.")
         return
     }
@@ -25,40 +25,54 @@ setup :: proc()
     setup_glfw_window_hints()
 
     s_window_handle = glfw.CreateWindow(WIDTH, HEIGHT, TITLE, nil, nil)
-    if s_window_handle == nil
-    {
+    if s_window_handle == nil {
         fmt.eprintln("GLFW window creation failed. Aborting.")
         return
     }
 
-    // Load OpenGL.
-    glfw.MakeContextCurrent(s_window_handle)
-    gl.load_up_to(GL_MAJOR_VERSION, GL_MINOR_VERSION, glfw.gl_set_proc_address)
-
+    s_initialized = true
 }
 
-teardown :: proc()
-{
+teardown :: proc() {
+    fmt.println("Teardown window.")
+    ensure(s_initialized)
+
     glfw.DestroyWindow(s_window_handle)
     glfw.Terminate()
+
+    s_initialized = false
+}
+
+is_running :: proc() -> bool {
+    assert(s_initialized)
+    return !glfw.WindowShouldClose(s_window_handle)
+}
+
+get_window_handle :: proc() -> glfw.WindowHandle {
+    ensure(s_initialized)
+    return s_window_handle
+}
+
+poll_events :: proc() {
+    glfw.PollEvents()
+}
+
+present_render :: proc() {
+    glfw.SwapBuffers(s_window_handle)
 }
 
 
 @(private)
-setup_glfw_window_hints :: proc()
-{
-    xpos, ypos, width, height :=
+setup_glfw_window_hints :: proc() {
+    xpos, ypos, width, height : i32 =
         glfw.GetMonitorWorkarea(glfw.GetPrimaryMonitor())
 
     centered_window_pos : [2]i32 = {
-        xpos + (0.5 * width - 0.5 * WIDTH),
-        ypos +
-            static_cast<int32_t>(height * 0.5
-                - HEIGHT * 0.5),
+        xpos + i32(math.floor(f32(width) * 0.5 - f32(WIDTH) * 0.5)),
+        ypos + i32(math.floor(f32(height) * 0.5 - f32(HEIGHT) * 0.5)),
     }
 
-    glfw.WindowHint(GLFW_POSITION_X, centered_window_pos[0])
-    glfw.WindowHint(GLFW_POSITION_Y, centered_window_pos[1])
-    glfw.WindowHint(GLFW_CLIENT_API, GLFW_NO_API)
-    glfw.WindowHint(GLFW_RESIZABLE, GLFW_FALSE)
+    glfw.WindowHint(glfw.POSITION_X, centered_window_pos[0])
+    glfw.WindowHint(glfw.POSITION_Y, centered_window_pos[1])
+    glfw.WindowHint(glfw.RESIZABLE, glfw.FALSE)
 }
