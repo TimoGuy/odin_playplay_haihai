@@ -25,8 +25,8 @@ main :: proc() {
     defer renderer.teardown()
 
     {   // Main loop.
-        fmt.println("Start of Main Loop.")
-        defer fmt.println("End of Main Loop.")
+        fmt.println(      "-=-=-=-= Start of Main Loop =-=-=-=-")
+        defer fmt.println("-=-=-=-=  End of Main Loop  =-=-=-=-")
 
         for is_running() {
             game_engine.let_tick()
