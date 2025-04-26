@@ -1,6 +1,7 @@
 package renderer
 
 import "core:fmt"
+import "core:time"
 import "vendor:glfw"
 import gl "vendor:OpenGL"
 
@@ -24,7 +25,7 @@ setup_opengl_context_in_glfw :: proc(window_handle : glfw.WindowHandle) -> bool 
 
 // Called by `timing.odin`
 @(private)
-render_opengl :: proc() {
+render_opengl :: proc(delta_time : time.Duration) {
     gl.ClearColor(0.5, 1.0, 0.75, 1.0)
     gl.Clear(gl.COLOR_BUFFER_BIT)
 }

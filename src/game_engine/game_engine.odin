@@ -1,6 +1,7 @@
 package game_engine
 
 import "core:fmt"
+import "core:time"
 
 @(private) s_initialized := false
 @(private) s_poll_events_fn : proc()
@@ -30,6 +31,6 @@ is_running :: proc() -> bool {
 
 // Called by `timing.odin`
 @(private)
-tick :: proc() {
-
+tick :: proc(delta_time : time.Duration) {
+    fmt.println("Tick!")
 }
