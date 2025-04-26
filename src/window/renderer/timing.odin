@@ -17,7 +17,7 @@ let_render :: proc() {
         //   track of? Ig what I think atm is that for ui elements and stuff like that
         //   it'd be necessary and good to keep track for.  -Thea 2025/04/26
         delta_time_since_last_render := time.tick_lap_time(&s_prev_tick)
-        render_opengl(delta_time_since_last_render)
+        render_opengl(f32(time.duration_seconds(delta_time_since_last_render)))
         s_present_render_fn()
     }
 }

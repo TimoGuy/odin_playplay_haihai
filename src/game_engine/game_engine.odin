@@ -31,7 +31,7 @@ is_running :: proc() -> bool {
 
 // Called by `timing.odin`
 @(private)
-tick :: proc(delta_time : time.Duration) {
+tick :: proc(delta_time : f32) {
     s_poll_events_fn()
-    fmt.println("Tick!")
+    fmt.println("Tick!", delta_time)
 }
